@@ -20,85 +20,92 @@ import com.nagarro.image.model.UserModel;
 /**
  * Servlet implementation class FileController
  */
-@WebServlet("/files")
+@WebServlet("/filesData")
 public class FileController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public FileController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	public FileController() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.sendRedirect("displaydata.jsp");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String imageName = null;
         byte bytes[] = null;
         double imageSize = 0;
-        if(ServletFileUpload.isMultipartContent(request))
-        {
-        	try
-        	{
-        		List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
-        		 for (FileItem item : multiparts) {
-                     if (item.isFormField()) {
-                         imageName = item.getString();
-                     } else {
-                         imageSize = item.getSize() / 1024;
-                         bytes = item.get();
-                     }
-                 }
-        		 UserModel user = (UserModel) request.getSession().getAttribute("user");
-        		 FilesModel image = new FilesModel(bytes,imageSize,imageName);
-                 image.setUser(user);
-                 if (user != null) {
-                     if (image.getFileSize() < 1024) {
-                         if (UserDAO.getImagesSize(user.getUser_name())
-                                 + image.getFileSize() < 1024*10) {
-                             UserDAO.saveFile(image);
-                             try {
+        if (ServletFileUpload.isMultipartContent(request)) {
+            try {
+                List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
 
 
-                                 UserModel userUpdated = UserDAO.getDetails(
-                                         ((UserModel) request.getSession().getAttribute("user")).getUser_name());
-                                 request.getSession().setAttribute("user", userUpdated);
-                                 response.sendRedirect("displaydata.jsp");
-                             } catch (Exception e) {
-                                 System.out.println("Unable to add user to session");
-                             }
-                         } else {
-                             System.out.println("Images size greater than 10 MB is not allowed");
-                             request.getSession().setAttribute("message", "Images size greater than 10 MB is not allowed");
-                             response.sendRedirect("displaydata.jsp");
-                         }
-                     } else {
-                         System.out.println("Image size greater than 1 MB is not allowed    ");
-                         request.getSession().setAttribute("message", "Image size greater than 1 MB is not allowed");
-                         response.sendRedirect("displaydata.jsp");
-                     }
-                 }
+                for (FileItem item : multiparts) {
+                    if (item.isFormField()) {
+                        imageName = item.getString();
+                    } else {
+                        imageSize = item.getSize() / 1024;
+                        bytes = item.get();
+                    }
+                }
 
-        	}
-        	
-        	catch (Exception e) {
-				// TODO: handle exception
-			}
-        }
-        
+
+
+              //  request.setAttribute("message", "Your Image has been uploaded successfully!");
+                System.out.println("success!!");
+                UserModel user = (UserModel) request.getSession().getAttribute("user");
+                FilesModel image = new FilesModel(bytes, imageSize, imageName);
+                System.out.println(image.toString());
+                image.setUser(user);
+                if (user != null) {
+                    if (image.getFileSize() < 1024) {
+                        if (UserDAO.getImagesSize(user.getUser_name())
+                                + image.getFileSize() < 1024*10) {
+                            UserDAO.saveFile(image);
+                            try {
+
+
+
+                                UserModel userUpdated = UserDAO.getDetails(
+                                        ((UserModel) request.getSession().getAttribute("user")).getUser_name());
+                                request.getSession().setAttribute("user", userUpdated);
+                                response.sendRedirect("displaydata.jsp");
+                            } catch (Exception e) {
+                                System.out.println("Unable to add user to session");
+                            }
+                        } else {
+                            System.out.println("Images size greater than 10 MB is not allowed");
+                            request.getSession().setAttribute("message", "Images size greater than 10 MB is not allowed");
+                            response.sendRedirect("displaydata.jsp");
+                        }
+                    } else {
+                        System.out.println("Image size greater than 1 MB is not allowed    ");
+                        request.getSession().setAttribute("message", "Image size greater than 1 MB is not allowed");
+                        response.sendRedirect("displaydata.jsp");
+                    }
+                }
+            } catch (Exception ex) {
+                request.getSession().setAttribute("message", "File Upload Failed due to " + ex);
+            }
 	}
 
+}
 }

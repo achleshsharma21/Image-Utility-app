@@ -1,5 +1,7 @@
 package com.nagarro.image.model;
 
+import java.util.Arrays;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "filedata")
 public class FilesModel {
+
+	@Override
+	public String toString() {
+		return "FilesModel [fileid=" + fileid + ", fileData=" + Arrays.toString(fileData) + ", fileSize=" + fileSize
+				+ ", fileName=" + fileName + ", user=" + user + "]";
+	}
 
 	public FilesModel() {
 		super();

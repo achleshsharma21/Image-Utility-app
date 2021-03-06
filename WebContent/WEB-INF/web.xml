@@ -3,6 +3,7 @@
   <display-name>ImageUtilityApp</display-name>
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
-    <welcome-file>success.jsp</welcome-file>
+    <welcome-file>displaydata.jsp</welcome-file>
+    <welcome-file>message.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

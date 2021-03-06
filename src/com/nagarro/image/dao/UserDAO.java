@@ -6,6 +6,7 @@ import org.hibernate.cfg.Configuration;
 import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -16,13 +17,13 @@ import com.nagarro.image.model.FilesModel;
 import com.nagarro.image.model.UserModel;
 
 public class UserDAO {
-	static Configuration configuration = new Configuration().addAnnotatedClass(UserModel.class)
-			.addAnnotatedClass(FilesModel.class).configure();
+	static Configuration configuration = new Configuration().addAnnotatedClass(FilesModel.class)
+			.addAnnotatedClass(UserModel.class).configure();
 	static SessionFactory sf = configuration.buildSessionFactory();
 
-	static Configuration configuration2 = new Configuration().addAnnotatedClass(FilesModel.class).configure();
-	static SessionFactory sf2 = configuration.buildSessionFactory();
-	
+//	static Configuration configuration1 = new Configuration().addAnnotatedClass(FilesModel.class).configure();
+//	static SessionFactory sf1 = configuration.buildSessionFactory();
+
 	public void saveUser(UserModel user) {
 		Transaction transaction = null;
 		try (Session session = sf.openSession()) {
@@ -61,10 +62,11 @@ public class UserDAO {
 	}
 
 	public static void saveFile(FilesModel file) {
-		try (Session session1 = sf2.openSession()) {
-			session1.beginTransaction();
-			session1.save(file);
-			session1.getTransaction().commit();
+		Transaction transaction = null;
+		try (Session session = sf.openSession()) {
+			transaction = session.beginTransaction();
+			session.save(file);
+			transaction.commit();
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -93,11 +95,12 @@ public class UserDAO {
 			CriteriaQuery<UserModel> criteria = builder.createQuery(UserModel.class);
 			Root<UserModel> root = criteria.from(UserModel.class);
 			criteria.select(root);
-			criteria.where(builder.equal(root.get("username"), username));
+			criteria.where(builder.equal(root.get("user_name"), username));
 			user = session.createQuery(criteria).uniqueResult();
 
 		} catch (Exception e) {
 			System.out.println("Unable to get user Details");
+			e.printStackTrace();
 		}
 		return user;
 	}
@@ -110,5 +113,45 @@ public class UserDAO {
 			totalSize += image.getFileSize();
 		}
 		return totalSize;
+	}
+
+	public static FilesModel getImage(String imageId) {
+		FilesModel ir = null;
+		try (Session session = sf.openSession()) {
+			session.beginTransaction();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<FilesModel> criteria = builder.createQuery(FilesModel.class);
+			Root<FilesModel> root = criteria.from(FilesModel.class);
+			criteria.select(root);
+			criteria.where(builder.equal(root.get("fileid"), imageId));
+			ir = session.createQuery(criteria).uniqueResult();
+		} catch (Exception e) {
+			System.out.println("Unable to get Image");
+		}
+		return ir;
+	}
+
+	public static void editImage(FilesModel image) {
+		try (Session session = sf.openSession()) {
+			session.beginTransaction();
+			session.update(image);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println("Unable to edit image");
+		}
+	}
+
+	public static void deleteImage(String imageId) {
+		try (Session session = sf.openSession()) {
+			session.beginTransaction();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaDelete<FilesModel> criteria = builder.createCriteriaDelete(FilesModel.class);
+			Root<FilesModel> root = criteria.from(FilesModel.class);
+			criteria.where(builder.equal(root.get("fileid"), imageId));
+			session.createQuery(criteria).executeUpdate();
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println("Unable to delete image");
+		}
 	}
 }

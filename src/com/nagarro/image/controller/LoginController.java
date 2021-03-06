@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.nagarro.image.dao.UserDAO;
+import com.nagarro.image.model.UserModel;
 
 /**
  * Servlet implementation class LoginController
@@ -47,7 +48,14 @@ public class LoginController extends HttpServlet {
 			
 			if(UserDAO.validate(username, password))
 			{
+				UserModel user = UserDAO.getDetails(request.getParameter("username"));
+				request.getSession().setAttribute("user", user);
 				response.sendRedirect("displaydata.jsp");
+				
+			}
+			else
+			{
+				response.sendRedirect("message.jsp");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
