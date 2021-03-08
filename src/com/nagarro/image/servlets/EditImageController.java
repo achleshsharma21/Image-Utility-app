@@ -1,4 +1,4 @@
-package com.nagarro.image.controller;
+package com.nagarro.image.servlets;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.nagarro.image.dao.UserDAO;
-import com.nagarro.image.model.FilesModel;
-import com.nagarro.image.model.UserModel;
+import com.nagarro.image.data.FilesModel;
+import com.nagarro.image.data.UserModel;
 
 /**
  * Servlet implementation class EditImageController
@@ -39,7 +39,9 @@ public class EditImageController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+//		response.sendRedirect("displaydata.jsp");
+		doPost(request, response);
 	}
 
 	/**
@@ -95,7 +97,7 @@ public class EditImageController extends HttpServlet {
 				UserModel userUpdated = UserDAO
 						.getDetails(((UserModel ) request.getSession().getAttribute("user")).getUser_name());
 				request.getSession().setAttribute("user", userUpdated);
-				response.sendRedirect("displaydata.jsp");
+				response.sendRedirect("displayData.jsp");
 			} catch (Exception e) {
 				System.out.println("Unable to set user to session");
 			}

@@ -3,6 +3,9 @@ package com.nagarro.image.dao;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import com.nagarro.image.data.FilesModel;
+import com.nagarro.image.data.UserModel;
+
 import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,16 +16,10 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import com.nagarro.image.model.FilesModel;
-import com.nagarro.image.model.UserModel;
-
 public class UserDAO {
 	static Configuration configuration = new Configuration().addAnnotatedClass(FilesModel.class)
 			.addAnnotatedClass(UserModel.class).configure();
 	static SessionFactory sf = configuration.buildSessionFactory();
-
-//	static Configuration configuration1 = new Configuration().addAnnotatedClass(FilesModel.class).configure();
-//	static SessionFactory sf1 = configuration.buildSessionFactory();
 
 	public void saveUser(UserModel user) {
 		Transaction transaction = null;
@@ -62,7 +59,9 @@ public class UserDAO {
 	}
 
 	public static void saveFile(FilesModel file) {
+		
 		Transaction transaction = null;
+		
 		try (Session session = sf.openSession()) {
 			transaction = session.beginTransaction();
 			session.save(file);
@@ -86,8 +85,10 @@ public class UserDAO {
 	}
 
 	public static UserModel getDetails(String username) {
+		
 		UserModel user = null;
 		try (Session session = sf.openSession()) {
+		
 			user = new UserModel();
 			session.beginTransaction();
 
@@ -132,6 +133,7 @@ public class UserDAO {
 	}
 
 	public static void editImage(FilesModel image) {
+
 		try (Session session = sf.openSession()) {
 			session.beginTransaction();
 			session.update(image);
@@ -139,10 +141,13 @@ public class UserDAO {
 		} catch (Exception e) {
 			System.out.println("Unable to edit image");
 		}
+
 	}
 
 	public static void deleteImage(String imageId) {
+
 		try (Session session = sf.openSession()) {
+
 			session.beginTransaction();
 			CriteriaBuilder builder = session.getCriteriaBuilder();
 			CriteriaDelete<FilesModel> criteria = builder.createCriteriaDelete(FilesModel.class);
@@ -150,8 +155,11 @@ public class UserDAO {
 			criteria.where(builder.equal(root.get("fileid"), imageId));
 			session.createQuery(criteria).executeUpdate();
 			session.getTransaction().commit();
-		} catch (Exception e) {
+		}
+
+		catch (Exception e) {
 			System.out.println("Unable to delete image");
 		}
+
 	}
 }

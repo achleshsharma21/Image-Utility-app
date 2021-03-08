@@ -1,40 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="com.nagarro.image.model.FilesModel"%>
-<%@ page import="com.nagarro.image.model.UserModel"%>
+<%@ page import="com.nagarro.image.data.FilesModel"%>
+<%@ page import="com.nagarro.image.data.UserModel"%>
 <%@ page import="com.nagarro.image.dao.UserDAO"%>
-<%@ page import="com.nagarro.image.controller.FileController"%>
-<%@ page import="com.nagarro.image.controller.LoginController"%>
+<%@ page import="com.nagarro.image.servlets.FileController"%>
+<%@ page import="com.nagarro.image.servlets.LoginController"%>
 <%@ page import="java.util.*"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 <link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-	crossorigin="anonymous">
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 	<%
 	if (session.getAttribute("user") == null) {
 	%>
-	<jsp:forward page="index.jsp" />
+	<jsp:forward page="login.jsp" />
 	<%
 	}
+
 	String username = "";
 	UserModel user = (UserModel) session.getAttribute("user");
+
 	try {
 	username = user.getUser_name();
 	} catch (Exception e) {
-	response.sendRedirect("index.jsp");
+	response.sendRedirect("login.jsp");
 	}
 	%>
+
 	<form action="<%=request.getContextPath()%>/filesData" method="post"
 		enctype="multipart/form-data">
-
-
 
 		<div class="row">
 			<div class="col-sm-4">
@@ -53,28 +53,32 @@
 			</div>
 		</div>
 	</form>
+
 	<div class="container">
 		<h4 class=" pt-5">Uploaded Images</h4>
 		<div class="row text-center">
 			<div class="col-1 border border-secondary">S.no</div>
-			<div class="col-4 border border-secondary">Name</div>
+			<div class="col-2 border border-secondary">Name</div>
 			<div class="col-2 border border-secondary">Size</div>
-			<div class="col-3 border border-secondary">Preview</div>
+			<div class="col-5 border border-secondary">Preview</div>
 			<div class="col-2 border border-secondary">Actions</div>
 		</div>
+
 		<%
 		Set<FilesModel> images = user.getImages();
-		int i = 0;
+		int serialNumber = 0;
+		double totalSize = 0;
 		for (FilesModel image : images) {
-			i++;
+			serialNumber++;
+			totalSize = totalSize + image.getFileSize();
 		%>
 		<div class="row text-center">
-			<div class="col-1 border border-secondary py-1"><%=i%></div>
-			<div class="col-4 border border-secondary py-1"><%=image.getFileName()%></div>
+			<div class="col-1 border border-secondary py-1"><%=serialNumber%></div>
+			<div class="col-2 border border-secondary py-1"><%=image.getFileName()%></div>
 			<div class="col-2 border border-secondary py-1"><%=image.getFileSize()%>
 				KB
 			</div>
-			<div class="col-3 border border-secondary py-1">
+			<div class="col-5 border border-secondary py-1">
 				<img
 					src="<%=request.getContextPath()%>/DisplayImage?imageId=<%=image.getId()%>"
 					alt="Image" height="100" width="100">
@@ -121,6 +125,7 @@
 						</div>
 					</div>
 				</div>
+
 				<a
 					href="<%=request.getContextPath()%>/DeleteImage?imageId=<%=image.getId()%>"><button
 						class="btn">
@@ -131,8 +136,22 @@
 		<%
 		}
 		%>
+		<div class="fixed-bottom head1"
+			style="font-size: medium; text-align: center">
+			Total Size:<%=totalSize%>
+			KB
+		</div>
 	</div>
-<script src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" data-auto-replace-svg="nest"></script>
 	
+	<script src="https://use.fontawesome.com/releases/v5.15.2/js/all.js"
+		data-auto-replace-svg="nest"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://use.fontawesome.com/releases/v5.15.2/js/all.js"
+		data-auto-replace-svg="nest"></script>
+
 </body>
 </html>

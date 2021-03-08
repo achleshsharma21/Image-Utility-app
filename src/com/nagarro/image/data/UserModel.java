@@ -1,4 +1,4 @@
-package com.nagarro.image.model;
+package com.nagarro.image.data;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.nagarro.image.controller;
+package com.nagarro.image.servlets;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.nagarro.image.dao.UserDAO;
-import com.nagarro.image.model.FilesModel;
-import com.nagarro.image.model.UserModel;
+import com.nagarro.image.data.FilesModel;
+import com.nagarro.image.data.UserModel;
 
 /**
  * Servlet implementation class FileController
@@ -39,7 +39,7 @@ public class FileController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.sendRedirect("displaydata.jsp");
+		response.sendRedirect("displayData.jsp");
 	}
 
 	/**
@@ -87,19 +87,19 @@ public class FileController extends HttpServlet {
                                 UserModel userUpdated = UserDAO.getDetails(
                                         ((UserModel) request.getSession().getAttribute("user")).getUser_name());
                                 request.getSession().setAttribute("user", userUpdated);
-                                response.sendRedirect("displaydata.jsp");
+                                response.sendRedirect("displayData.jsp");
                             } catch (Exception e) {
                                 System.out.println("Unable to add user to session");
                             }
                         } else {
                             System.out.println("Images size greater than 10 MB is not allowed");
                             request.getSession().setAttribute("message", "Images size greater than 10 MB is not allowed");
-                            response.sendRedirect("displaydata.jsp");
+                            response.sendRedirect("displayData.jsp");
                         }
                     } else {
                         System.out.println("Image size greater than 1 MB is not allowed    ");
                         request.getSession().setAttribute("message", "Image size greater than 1 MB is not allowed");
-                        response.sendRedirect("displaydata.jsp");
+                        response.sendRedirect("displayData.jsp");
                     }
                 }
             } catch (Exception ex) {

@@ -1,4 +1,4 @@
-package com.nagarro.image.controller;
+package com.nagarro.image.servlets;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.nagarro.image.dao.UserDAO;
-import com.nagarro.image.model.UserModel;
+import com.nagarro.image.data.UserModel;
 
 /**
  * Servlet implementation class LoginController
@@ -50,7 +50,7 @@ public class LoginController extends HttpServlet {
 			{
 				UserModel user = UserDAO.getDetails(request.getParameter("username"));
 				request.getSession().setAttribute("user", user);
-				response.sendRedirect("displaydata.jsp");
+				response.sendRedirect("displayData.jsp");
 				
 			}
 			else

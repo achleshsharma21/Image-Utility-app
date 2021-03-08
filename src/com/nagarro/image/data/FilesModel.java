@@ -1,4 +1,4 @@
-package com.nagarro.image.model;
+package com.nagarro.image.data;
 
 import java.util.Arrays;
 
@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "filedata")
+
 public class FilesModel {
 
 	@Override
@@ -22,7 +23,6 @@ public class FilesModel {
 
 	public FilesModel() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Id
